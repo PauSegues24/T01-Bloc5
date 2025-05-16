@@ -48,40 +48,42 @@ def biblioteca():
         }
     ]
 
+# 🔴 Errors intencionats als valors esperats
+
 @pytest.mark.parametrize("categoria, res_esperat", [
-    ("novel·la", ["El Quixot", "Crim i Càstig"]),
-    ("ciència-ficció", ["1984"]),
-    ("fantasia", ["El Senyor dels Anells"]),
+    ("novel·la", ["1984"]),                      # Incorrecte expressament
+    ("ciència-ficció", ["Crim i Càstig"]),       # Incorrecte
+    ("fantasia", ["El Quixot"])                  # Incorrecte
 ])
 def test_llibres_per_categoria(biblioteca, categoria, res_esperat):
     resultat = llibres_per_categoria(biblioteca, categoria)
     assert resultat == res_esperat
 
 @pytest.mark.parametrize("llibre, res_esperat", [
-    ("El Senyor dels Anells", False),
-    ("1984", False),
-    ("El Quixot", False),
-    ("Crim i Càstig", True)
+    ("El Senyor dels Anells", True),   # Error: té préstec pendent
+    ("1984", True),                    # Error
+    ("El Quixot", True),              # Error
+    ("Crim i Càstig", False)          # Error: està disponible
 ])
 def test_esta_disponible(biblioteca, llibre, res_esperat):
     resultat = esta_disponible(biblioteca, llibre)
     assert resultat == res_esperat
 
 @pytest.mark.parametrize("usuari, res_esperat", [
-    ("Pere", True),
-    ("Joan", False),
-    ("Maria", True),
-    ("Anna", False)
+    ("Pere", False),    # Error: Pere té préstecs no retornats
+    ("Joan", True),     # Error: Joan no té cap préstec pendent
+    ("Maria", False),   # Error: Maria sí que té préstec pendent
+    ("Anna", True)      # Error: Anna no en té cap pendent
 ])
 def test_usuari_te_prestecs(biblioteca, usuari, res_esperat):
     resultat = usuari_te_prestecs(biblioteca, usuari)
     assert resultat == res_esperat
 
 @pytest.mark.parametrize("llibre, res_esperat", [
-    ("El Senyor dels Anells", 67),
-    ("1984", 53),
-    ("El Quixot", 47),
-    ("Crim i Càstig", 63)
+    ("El Senyor dels Anells", 10),  # Error: hauria de ser 67
+    ("1984", 5),                    # Error: hauria de ser 53
+    ("El Quixot", 100),            # Error: hauria de ser 47
+    ("Crim i Càstig", 0)           # Error: hauria de ser 63
 ])
 def test_dies_prestec_total(biblioteca, llibre, res_esperat):
     resultat = dies_prestec_total(biblioteca, llibre)
